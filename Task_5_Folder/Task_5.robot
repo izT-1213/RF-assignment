@@ -4,6 +4,7 @@ Library    SeleniumLibrary
 
 *** Variables ***
 ${appURL}    https://app.deriv.com/
+@{MULTIPLIERS}=    200    100    60    40    20
 
 *** Keywords ***
 Clear Input Fields
@@ -44,7 +45,21 @@ Change Underlying
     Click Element    dt_contract_dropdown
     Wait Until Element Is Visible    dt_contract_multiplier_item    40
     Click Element    dt_contract_multiplier_item
-    Wait Until Element Is Visible    //div[@class="purchase-container"]    120
+    Wait Until Element Is Visible    //div[@class="purchase-container"]    300
+
+Verify page elements
     Element Attribute Value Should Be    //span[@name='contract_type']    value    multiplier
     Page Should Contain    Stake
     Page Should Not Contain    Payout
+    Page Should Contain Element    //label[@class='dc-checkbox take_profit-checkbox__input']
+    Page Should Contain Element    //label[@class='dc-checkbox stop_loss-checkbox__input']
+    Page Should Contain Element    //label[@class='dc-checkbox']
+    Click Element    dropdown-display
+    Wait Until Page Contains Element    200
+    FOR  ${item}  IN  @{MULTIPLIERS}
+        Page Should Contain Element    ${item}
+    END
+
+Close Browser
+    Close Browser
+
